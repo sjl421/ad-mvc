@@ -10,3 +10,12 @@ class User(Model):
         super().__init__(form)
         self.username = form['username']
         self.password = form['password']
+
+    @classmethod
+    def guest(cls):
+        form = dict(
+            username='游客',
+            password='',
+        )
+        g = cls(form)
+        return g
