@@ -5,6 +5,6 @@ def log(*args, **kwargs):
     local_time = time.localtime(time.time())
     formated_time = time.strftime(time_format, local_time)
 
-    with open('ad-web.log', 'w+', encoding='utf-8') as f:
+    with open('ad-web.log', 'a+', encoding='utf-8') as f:
         print(formated_time, *args, **kwargs)
         print(formated_time, *args, file=f, **kwargs)
