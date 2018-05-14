@@ -1,6 +1,8 @@
 import _thread
 import socket
 
+from utils import log
+
 
 def process_reqeust(connection):
     with connection as con:
@@ -11,7 +13,8 @@ def process_reqeust(connection):
             request += r
             if len(r) < buffer_size:
                 break
-        print('接收到 request <{}>'.format(request.decode()))
+        log('接收到 request <{}>'.format(request.decode()))
+
         con.sendall(b'recived!')
 
 
@@ -22,7 +25,8 @@ def run(host, port):
     with socket.socket() as s:
         s.bind((host, port))
         s.listen()
-        print('服务器监听启动 http://{}:{}'.format(host, port))
+        log('服务器监听启动 http://{}:{}'.format(host, port))
+
         while True:
             connection, address = s.accept()
             _thread.start_new_thread(process_reqeust, (connection,))
