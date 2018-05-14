@@ -12,15 +12,15 @@ from models.user import User
 
 
 def register_view(request):
-    us = User.all()
-    t = Template.render('register.html', users=us)
+    result = request.args.get('result', '')
+    t = Template.render('register.html', result=result)
     return html_response(t)
 
 
 def register(request):
     form = request.form()
-    User.new(form)
-    return redirect('/register/view')
+    result = User.register(form)
+    return redirect('/user/register/view?result={}'.format(result))
 
 
 def login_view(request):
@@ -32,7 +32,7 @@ def login_view(request):
 
 def login(request):
     form = request.form()
-    u = User.find_by(**form)
+    u, result = User.login(form)
 
     if u is not None:
         session_id = str(uuid.uuid4())
@@ -43,14 +43,12 @@ def login(request):
         Session.new(form)
 
         headers = {
-            'Set-Cookie': 'session_id={}'.format(session_id),
+            'Set-Cookie': 'session_id={}; path=/'.format(session_id),
         }
-        result = '登陆成功'
 
-        return redirect('/login/view?result={}'.format(result), headers)
+        return redirect('/user/login/view?result={}'.format(result), headers)
     else:
-        result = '登录失败'
-        return redirect('/login/view?result={}'.format(result))
+        return redirect('/user/login/view?result={}'.format(result))
 
 
 def route_dict():
@@ -60,9 +58,9 @@ def route_dict():
     value 是路由处理函数(就是响应)
     """
     d = {
-        '/register/view': register_view,
-        '/register': register,
-        '/login/view': login_view,
-        '/login': login,
+        '/user/register/view': register_view,
+        '/user/register': register,
+        '/user/login/view': login_view,
+        '/user/login': login,
     }
     return d
