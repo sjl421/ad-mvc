@@ -3,6 +3,19 @@ import socket
 
 from utils import log
 from request import Reqeust
+from routes import error
+from routes.route_pulic import route_dict as public_routes
+
+
+def response_for_path(request):
+    """
+    根据 path 调用相应的处理函数
+    没有处理的 path 会返回 404
+    """
+    r = {}
+    r.update(public_routes())
+    response = r.get(request.path, error)
+    return response(request)
 
 
 def process_reqeust(connection):
@@ -21,7 +34,9 @@ def process_reqeust(connection):
             request = Reqeust(raw_data)
             log('接收到 request {}'.format(request))
 
-            con.sendall(b'recived!')
+            response = response_for_path(request)
+            con.sendall(response)
+            log('发送出 response <{}>'.format(response))
 
 
 def run(host, port):
