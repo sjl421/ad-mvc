@@ -7,7 +7,7 @@ def template(name):
         return f.read()
 
 
-def formatted_header(headers, code=200, phrase='OK'):
+def response_with_headers(headers, code=200, phrase='OK'):
     header = 'HTTP/1.1 {} {}\r\n'.format(code, phrase)
     header += ''.join(
         '{}: {}\r\n'.format(k, v) for k, v in headers.items()
@@ -25,9 +25,22 @@ def html_response(body, headers=None):
     else:
         headers.update(h)
 
-    header = formatted_header(headers)
+    header = response_with_headers(headers)
     r = header + '\r\n' + body
 
+    return r.encode()
+
+
+def redirect(url):
+    """
+    浏览器在收到 302 响应的时候
+    会自动在 HTTP header 里面找 Location 字段并获取一个 url
+    然后自动请求新的 url
+    """
+    headers = {
+        'Location': url,
+    }
+    r = response_with_headers(headers, 302, 'REDIRECT') + '\r\n'
     return r.encode()
 
 

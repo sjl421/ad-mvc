@@ -1,4 +1,4 @@
-from . import(
+from . import (
     template,
     html_response,
 )
@@ -17,8 +17,8 @@ def static(request):
     path = 'static/' + filename
     with open(path, 'rb') as f:
         header = b'HTTP/1.x 200 OK\r\n\r\n'
-        img = header + f.read()
-        return img
+        src = header + f.read()
+        return src
 
 
 def route_dict():

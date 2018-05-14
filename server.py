@@ -5,6 +5,7 @@ from utils import log
 from request import Reqeust
 from routes import error
 from routes.route_pulic import route_dict as public_routes
+from routes.route_user import route_dict as user_routes
 
 
 def response_for_path(request):
@@ -14,6 +15,7 @@ def response_for_path(request):
     """
     r = {}
     r.update(public_routes())
+    r.update(user_routes())
     response = r.get(request.path, error)
     return response(request)
 
