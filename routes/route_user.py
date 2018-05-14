@@ -1,9 +1,9 @@
 from . import (
-    template,
     html_response,
     redirect,
 )
 
+from template import Template
 from models.user import User
 
 
@@ -14,7 +14,8 @@ def register(request):
 
 
 def register_view(request):
-    t = template('register.html')
+    us = User.all()
+    t = Template.render('register.html', users=us)
     return html_response(t)
 
 

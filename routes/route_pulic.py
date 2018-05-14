@@ -1,11 +1,12 @@
 from . import (
-    template,
     html_response,
 )
 
+from template import Template
+
 
 def index(request):
-    t = template('index.html')
+    t = Template.render('index.html')
     return html_response(t)
 
 

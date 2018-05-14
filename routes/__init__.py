@@ -1,12 +1,3 @@
-def template(name):
-    """
-    根据名字读取 templates 文件夹里的一个文件并返回
-    """
-    path = 'templates/' + name
-    with open(path, 'r', encoding='utf-8') as f:
-        return f.read()
-
-
 def response_with_headers(headers, code=200, phrase='OK'):
     header = 'HTTP/1.1 {} {}\r\n'.format(code, phrase)
     header += ''.join(
