@@ -2,6 +2,10 @@ import json
 import os
 
 from utils import log
+from .user_role import (
+    JsonEncoder,
+    json_decode,
+)
 
 
 def save(data, path):
@@ -10,7 +14,7 @@ def save(data, path):
     data 是 dict 或者 list
     path 是保存文件的路径
     """
-    s = json.dumps(data, indent=2, ensure_ascii=False)
+    s = json.dumps(data, indent=2, ensure_ascii=False, cls=JsonEncoder)
     # 确保目录存在
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w+', encoding='utf-8') as f:
@@ -27,7 +31,7 @@ def load(path):
         with open(path, 'r', encoding='utf-8') as f:
             s = f.read()
             log('load', s)
-            return json.loads(s)
+            return json.loads(s, object_hook=json_decode)
     else:
         log('db not found <{}>'.format(path))
         return []
