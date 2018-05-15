@@ -6,6 +6,7 @@ from request import Request
 from routes import error
 from routes.routes_pulic import route_dict as public_routes
 from routes.routes_user import route_dict as user_routes
+from routes.routes_note import route_dict as note_routes
 
 
 def response_for_path(request):
@@ -16,6 +17,7 @@ def response_for_path(request):
     r = {}
     r.update(public_routes())
     r.update(user_routes())
+    r.update(note_routes())
     response = r.get(request.path, error)
     return response(request)
 
