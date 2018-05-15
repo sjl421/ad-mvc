@@ -1,15 +1,20 @@
+from functools import wraps
+
 from models.note import Note
 from . import (
     current_user,
     json_response,
+    api_login_required,
 )
 
 
+@api_login_required
 def all(request):
     js = Note.all_json()
     return json_response(js)
 
 
+@api_login_required
 def add(request):
     form = request.json()
     u = current_user(request)
@@ -20,6 +25,21 @@ def add(request):
     return json_response(n.json())
 
 
+def admin_required(route_function):
+    @wraps(route_function)
+    def wrapper(request):
+        u = current_user(request)
+        if u.is_admin():
+            return route_function(request)
+        else:
+            d = dict(error='需要管理员权限')
+            return json_response(d)
+
+    return wrapper
+
+
+@api_login_required
+@admin_required
 def delete(request):
     form = request.json()
     note_id = int(form['id'])
@@ -32,6 +52,25 @@ def delete(request):
     return json_response(m)
 
 
+def ownership_required(route_function):
+    @wraps(route_function)
+    def wrapper(request):
+        form = request.json()
+        note_id = int(form['id'])
+        n = Note.find_by(id=note_id)
+        u = current_user(request)
+
+        if u.id == n.user_id:
+            return route_function(request)
+        else:
+            d = dict(error='只有所属用户才能操作')
+            return json_response(d)
+
+    return wrapper
+
+
+@api_login_required
+@ownership_required
 def update(request):
     form = request.json()
     n = Note.update(form)

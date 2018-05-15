@@ -108,3 +108,22 @@ def login_required(route_function):
             return route_function(request)
 
     return wrapper
+
+
+def api_login_required(route_function):
+    """
+    ajax 无法直接 redirect，故约定在失败时添加一个 error 字段作为标记
+    """
+    @wraps(route_function)
+    def wrapper(request):
+        log('api_login_required')
+        u = current_user(request)
+        if u.is_guest():
+            log('游客用户')
+            d = dict(error='请先登录')
+            return json_response(d)
+        else:
+            log('登录用户', route_function)
+            return route_function(request)
+
+    return wrapper

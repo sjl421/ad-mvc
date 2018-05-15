@@ -34,7 +34,13 @@ var ajax = function(method, path, data, responseCallback) {
         if(r.readyState === 4) {
             // r.response 存的就是服务器发过来的放在 HTTP BODY 中的数据
             var response = JSON.parse(r.response)
-            responseCallback(response)
+            // ajax 无法直接完成跳转，此处约定“用一个 error 字段作为失败的标记”
+            var error = response.error
+            if (error) {
+                alert(error)
+            } else {
+                responseCallback(response)
+            }
         }
     }
     // 把数据转换为 json 格式字符串

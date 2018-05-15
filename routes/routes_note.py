@@ -1,10 +1,12 @@
 from . import (
     current_user,
     html_response,
+    login_required,
 )
 from template import Template
 
 
+@login_required
 def index(request):
     u = current_user(request)
     t = Template.render('/note/index.html', username=u.username)
