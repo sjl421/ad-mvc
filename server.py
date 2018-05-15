@@ -24,7 +24,7 @@ def response_for_path(request):
     return response(request)
 
 
-def process_reqeust(connection):
+def process_request(connection):
     with connection as con:
         raw_data = b''
         buffer_size = 1024
@@ -56,7 +56,7 @@ def run(host, port):
 
         while True:
             connection, address = s.accept()
-            _thread.start_new_thread(process_reqeust, (connection,))
+            _thread.start_new_thread(process_request, (connection,))
 
 
 if __name__ == '__main__':
