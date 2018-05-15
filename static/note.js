@@ -16,6 +16,12 @@ var apiNoteDelete = function(data, callback) {
     ajax(method, path, data, callback)
 }
 
+var apiNoteUpdate = function(data, callback) {
+    var method = 'POST'
+    var path = '/api/note/update'
+    ajax(method, path, data, callback)
+}
+
 var noteTemplate = function(note) {
     // Note DOM
     var t = `
@@ -27,8 +33,23 @@ var noteTemplate = function(note) {
                 <span>&gt</span>
             </h4>
             <div class="note-content">${escapedHTML(note.content)}</div>
+
             <button class="note-edit">编辑</button>
             <button class="note-delete">删除</button>
+
+            <div class="note-update-form-container">
+            </div>
+        </div>
+    `
+    return t
+}
+
+var noteUpdateTemplate = function(title, content) {
+    var t = `
+        <div class="note-update-form">
+            <input type="text" class="note-title-input" value="${title}">
+            <input type="text" class="note-content-input" value="${content}">
+            <button class="note-update">更新留言</button>
         </div>
     `
     return t
@@ -38,6 +59,26 @@ var insertNote = function(note) {
     var noteCell = noteTemplate(note)
     var noteList = e('#id-note-list')
     noteList.insertAdjacentHTML('beforeend', noteCell)
+}
+
+var insertNoteUpdateForm = function(noteCell) {
+    var formContainer = noteCell.querySelector('.note-update-form-container')
+    var tilteField = noteCell.querySelector('.note-title')
+    var contentField = noteCell.querySelector('.note-content')
+
+    var title = tilteField.innerText
+    var content = contentField.innerText
+
+    var t = noteUpdateTemplate(title, content)
+    formContainer.innerHTML = t
+}
+
+var updateNote = function(noteCell, note) {
+    var tilteField = noteCell.querySelector('.note-title')
+    var contentField = noteCell.querySelector('.note-content')
+
+    tilteField.innerText = note.title
+    contentField.innerText = note.content
 }
 
 var bindNoteAddEvent = function() {
@@ -81,9 +122,52 @@ var bindNoteDeleteEvent = function() {
     })
 }
 
+var bindNoteEditEvent = function() {
+    var noteList = e('#id-note-list')
+    noteList.addEventListener('click', function(event) {
+        var self = event.target
+        if (self.classList.contains('note-edit')) {
+            var noteCell = self.closest('.note-cell')
+            insertNoteUpdateForm(noteCell)
+        }
+    })
+}
+
+var bindNoteUpdateEvent = function() {
+    var noteList = e('#id-note-list')
+    noteList.addEventListener('click', function(event) {
+        var self = event.target
+        if (self.classList.contains('note-update')) {
+            var noteCell = self.closest('.note-cell')
+            var updateForm = noteCell.querySelector('.note-update-form')
+            var titleInput = noteCell.querySelector('.note-title-input')
+            var contentInput = noteCell.querySelector('.note-content-input')
+
+            var noteId = noteCell.dataset.id
+            var title = titleInput.value
+            var content = contentInput.value
+            var form = {
+                id: noteId,
+                title: title,
+                content: content,
+            }
+
+            apiNoteUpdate(form, function(response) {
+                var note = response
+                log('update note', note)
+
+                updateNote(noteCell, note)
+                updateForm.remove()
+            })
+        }
+    })
+}
+
 var bindEvents = function () {
     bindNoteAddEvent()
     bindNoteDeleteEvent()
+    bindNoteEditEvent()
+    bindNoteUpdateEvent()
 }
 
 var loadNotes = function() {

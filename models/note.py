@@ -14,7 +14,7 @@ class Note(Model):
 
     @classmethod
     def update(cls, form):
-        note_id = form['id']
+        note_id = int(form['id'])
         u = cls.find_by(id=note_id)
 
         u.title = form['title']
