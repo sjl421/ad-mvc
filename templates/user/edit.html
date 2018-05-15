@@ -6,6 +6,7 @@
 </head>
 <body>
     <h1>用户编辑</h1>
+    <h2>你好 {{ username }}</h2>
     <form action="/user/update" method="POST">
         <input type="text" name="id" value="{{ user.id }}" hidden>
         <br>

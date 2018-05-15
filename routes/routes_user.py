@@ -15,7 +15,8 @@ from models.user import User
 
 def register_view(request):
     result = request.args.get('result', '')
-    t = Template.render('/user/register.html', result=result)
+    u = current_user(request)
+    t = Template.render('/user/register.html', username=u.username, result=result)
     return html_response(t)
 
 
@@ -26,8 +27,8 @@ def register(request):
 
 
 def login_view(request):
-    u = current_user(request)
     result = request.args.get('result', '')
+    u = current_user(request)
     t = Template.render('/user/login.html', username=u.username, result=result)
     return html_response(t)
 
@@ -86,9 +87,12 @@ def admin_required(route_function):
 
 @login_required
 def admin(request):
-    us = User.all()
     result = request.args.get('result', '')
-    t = Template.render('/user/admin.html', users=us, result=result)
+
+    us = User.all()
+    u = current_user(request)
+
+    t = Template.render('/user/admin.html', username=u.username, users=us, result=result)
     return html_response(t)
 
 
@@ -97,7 +101,11 @@ def admin(request):
 def edit(request):
     user_id = int(request.args['id'])
     u = User.find_by(id=user_id)
-    t = Template.render('/user/edit.html', user=u)
+
+    cu = current_user(request)
+    username = cu.username
+
+    t = Template.render('/user/edit.html', username=username, user=u)
     return html_response(t)
 
 

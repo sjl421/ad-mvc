@@ -1,12 +1,14 @@
 from . import (
     html_response,
+    current_user,
 )
 
 from template import Template
 
 
 def index(request):
-    t = Template.render('index.html')
+    u = current_user(request)
+    t = Template.render('index.html', username=u.username)
     return html_response(t)
 
 

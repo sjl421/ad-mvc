@@ -4,8 +4,8 @@ import socket
 from utils import log
 from request import Reqeust
 from routes import error
-from routes.route_pulic import route_dict as public_routes
-from routes.route_user import route_dict as user_routes
+from routes.routes_pulic import route_dict as public_routes
+from routes.routes_user import route_dict as user_routes
 
 
 def response_for_path(request):
