@@ -22,7 +22,7 @@ def add(request):
 
 def delete(request):
     form = request.json()
-    note_id = form['id']
+    note_id = int(form['id'])
 
     Note.delete(id=note_id)
 

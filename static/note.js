@@ -10,6 +10,12 @@ var apiNoteAdd = function(data, callback) {
     ajax(method, path, data, callback)
 }
 
+var apiNoteDelete = function(data, callback) {
+    var method = 'POST'
+    var path = '/api/note/delete'
+    ajax(method, path, data, callback)
+}
+
 var noteTemplate = function(note) {
     // Note DOM
     var t = `
@@ -56,8 +62,28 @@ var bindNoteAddEvent = function() {
     })
 }
 
+var bindNoteDeleteEvent = function() {
+    var noteList = e('#id-note-list')
+    noteList.addEventListener('click', function(event) {
+        var self = event.target
+        if (self.classList.contains('note-delete')) {
+            var noteCell = self.closest('.note-cell')
+            var noteId = noteCell.dataset.id
+            var form = {
+                id: noteId,
+            }
+
+            apiNoteDelete(form, function(response) {
+                log('delete note', response)
+                noteCell.remove()
+            })
+        }
+    })
+}
+
 var bindEvents = function () {
     bindNoteAddEvent()
+    bindNoteDeleteEvent()
 }
 
 var loadNotes = function() {
