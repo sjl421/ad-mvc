@@ -82,9 +82,9 @@ var updateNote = function(noteCell, note) {
 }
 
 var bindNoteAddEvent = function() {
-    var b = e('#id-note-add-button')
+    var addForm = e('#id-note-add-form')
+    var b = addForm.querySelector('.note-add')
     b.addEventListener('click', function() {
-        var addForm = e('#id-note-add-form')
         var titleInput = addForm.querySelector('.note-title-input')
         var contentInput = addForm.querySelector('.note-content-input')
 
