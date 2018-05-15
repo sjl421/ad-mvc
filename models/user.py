@@ -19,6 +19,7 @@ class User(Model):
     def guest(cls):
         form = dict(
             username='游客',
+            password='',
             role=UserRole.guest,
         )
         g = cls(form)
@@ -81,6 +82,7 @@ class User(Model):
             if u is not None:
                 u.username = username
                 u.password = cls.salted_password(password)
+                u.role = form.get('role', u.role)
                 u.save()
 
                 result = '更新成功'
