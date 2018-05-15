@@ -13,15 +13,11 @@ def all(request):
 def add(request):
     form = request.json()
     u = current_user(request)
-    form['user_id'] = u.id
 
+    form['user_id'] = u.id
     n = Note.new(form)
 
-    m = dict(
-        message='添加成功',
-        note=n.json(),
-    )
-    return json_response(m)
+    return json_response(n.json())
 
 
 def delete(request):
@@ -39,12 +35,7 @@ def delete(request):
 def update(request):
     form = request.json()
     n = Note.update(form)
-
-    m = dict(
-        message='修改成功',
-        note=n.json(),
-    )
-    return json_response(m)
+    return json_response(n.json())
 
 
 def route_dict():

@@ -4,6 +4,12 @@ var apiNoteAll = function(callback) {
     ajax(method, path, '', callback)
 }
 
+var apiNoteAdd = function(data, callback) {
+    var method = 'POST'
+    var path = '/api/note/add'
+    ajax(method, path, data, callback)
+}
+
 var noteTemplate = function(note) {
     // Note DOM
     var t = `
@@ -24,8 +30,34 @@ var noteTemplate = function(note) {
 
 var insertNote = function(note) {
     var noteCell = noteTemplate(note)
-    var noteList = e('#id-todo-list')
+    var noteList = e('#id-note-list')
     noteList.insertAdjacentHTML('beforeend', noteCell)
+}
+
+var bindNoteAddEvent = function() {
+    var b = e('#id-note-add-button')
+    b.addEventListener('click', function() {
+        var addForm = e('#id-note-add-form')
+        var titleInput = addForm.querySelector('.note-title-input')
+        var contentInput = addForm.querySelector('.note-content-input')
+
+        var title = titleInput.value
+        var content = contentInput.value
+        var form = {
+            title: title,
+            content: content,
+        }
+
+        apiNoteAdd(form, function(response) {
+            var note = response
+            log('add note', note)
+            insertNote(note)
+        })
+    })
+}
+
+var bindEvents = function () {
+    bindNoteAddEvent()
 }
 
 var loadNotes = function() {
@@ -41,6 +73,7 @@ var loadNotes = function() {
 }
 
 var __main = function() {
+    bindEvents()
     loadNotes()
 }
 
