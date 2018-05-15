@@ -1,3 +1,4 @@
+import json
 from functools import wraps
 
 from models.session import Session
@@ -19,7 +20,7 @@ def current_user(request):
         return User.guest()
 
 
-def response_with_headers(headers, code=200, phrase='OK'):
+def formatted_header(headers, code=200, phrase='OK'):
     header = 'HTTP/1.1 {} {}\r\n'.format(code, phrase)
     header += ''.join(
         '{}: {}\r\n'.format(k, v) for k, v in headers.items()
@@ -37,7 +38,7 @@ def html_response(body, headers=None):
     else:
         headers.update(h)
 
-    header = response_with_headers(headers)
+    header = formatted_header(headers)
     r = header + '\r\n' + body
 
     return r.encode()
@@ -58,7 +59,28 @@ def redirect(url, headers=None):
     else:
         headers.update(h)
 
-    r = response_with_headers(headers, 302, 'REDIRECT') + '\r\n'
+    r = formatted_header(headers, 302, 'REDIRECT') + '\r\n'
+    return r.encode()
+
+
+def json_response(data, headers=None):
+    """
+    本函数返回 json 格式的 body 数据
+    前端的 ajax 函数就可以用 JSON.parse 解析出格式化的数据
+    """
+    h = {
+        'Content-Type': 'application/json',
+    }
+
+    if headers is None:
+        headers = h
+    else:
+        headers.update(h)
+
+    header = formatted_header(headers)
+    body = json.dumps(data, ensure_ascii=False, indent=2)
+    r = header + '\r\n' + body
+
     return r.encode()
 
 
