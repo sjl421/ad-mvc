@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理页面</title>
+</head>
+<body>
+    <h1>用户管理</h1>
+    <h2>用户列表</h2>
+    {% for u in users %}
+    <h3>{{ u.username }}</h3>
+    {% endfor %}
+</body>
+</html>

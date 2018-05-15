@@ -1,10 +1,12 @@
 import uuid
 
 from models.session import Session
+from utils import log
 from . import (
     current_user,
     html_response,
     redirect,
+    login_required,
 )
 
 from template import Template
@@ -51,6 +53,13 @@ def login(request):
         return redirect('/user/login/view?result={}'.format(result))
 
 
+@login_required
+def admin(request):
+    us = User.all()
+    t = Template.render('admin.html', users=us)
+    return html_response(t)
+
+
 def route_dict():
     """
     路由字典
@@ -62,5 +71,6 @@ def route_dict():
         '/user/register': register,
         '/user/login/view': login_view,
         '/user/login': login,
+        '/user/admin': admin,
     }
     return d

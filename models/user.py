@@ -22,6 +22,9 @@ class User(Model):
         g = cls(form)
         return g
 
+    def is_guest(self):
+        return self.id is None
+
     @staticmethod
     def salted_password(password, salt='$!@><?>HUI&DWQa`'):
         salted = password + salt

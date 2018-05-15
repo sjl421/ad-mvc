@@ -1,5 +1,8 @@
+from functools import wraps
+
 from models.session import Session
 from models.user import User
+from utils import log
 
 
 def current_user(request):
@@ -68,3 +71,18 @@ def error(request, code=404):
         404: b'HTTP/1.x 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
     }
     return e.get(code, b'')
+
+
+def login_required(route_function):
+    @wraps(route_function)
+    def wrapper(request):
+        log('login_required')
+        u = current_user(request)
+        if u.is_guest():
+            log('游客用户')
+            return redirect('/user/login/view')
+        else:
+            log('登录用户', route_function)
+            return route_function(request)
+
+    return wrapper
