@@ -2,7 +2,7 @@ import json
 from urllib.parse import unquote_plus
 
 
-class Reqeust(object):
+class Request(object):
     def __init__(self, raw_data):
         self.raw_data = raw_data
         self.method = ''

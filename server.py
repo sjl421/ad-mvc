@@ -2,7 +2,7 @@ import _thread
 import socket
 
 from utils import log
-from request import Reqeust
+from request import Request
 from routes import error
 from routes.routes_pulic import route_dict as public_routes
 from routes.routes_user import route_dict as user_routes
@@ -33,7 +33,7 @@ def process_reqeust(connection):
         raw_data = raw_data.decode()
         log('接收到 raw_data <{}>'.format(raw_data))
         if len(raw_data) > 0:
-            request = Reqeust(raw_data)
+            request = Request(raw_data)
             log('接收到 request {}'.format(request))
 
             response = response_for_path(request)
