@@ -27,3 +27,11 @@ class Note(Model):
         from .user import User
         u = User.find_by(id=self.user_id)
         return u
+
+    def json(self):
+        form = super().json()
+
+        u = self.user()
+        form['username'] = u.username
+
+        return form
