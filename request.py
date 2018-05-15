@@ -15,9 +15,10 @@ class Reqeust(object):
         self.setup()
 
     def __repr__(self):
+        classname = self.__class__
         properties = ['{}: ({})'.format(k, v) for k, v in self.__dict__.items()]
         s = '\n'.join(properties)
-        return '< {} >\n'.format(s)
+        return '< {}\n{} >\n'.format(classname, s)
 
     def setup(self):
         header, body = self.raw_data.split('\r\n\r\n', 1)
