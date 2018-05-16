@@ -58,15 +58,15 @@ var noteUpdateTemplate = function(title, content) {
 var insertNote = function(note) {
     var noteCell = noteTemplate(note)
     var noteList = e('#id-note-list')
-    noteList.insertAdjacentHTML('beforeend', noteCell)
+    noteList.insertAdjacentHTML('beforeEnd', noteCell)
 }
 
 var insertNoteUpdateForm = function(noteCell) {
     var formContainer = noteCell.querySelector('.note-update-form-container')
-    var tilteField = noteCell.querySelector('.note-title')
+    var titleField = noteCell.querySelector('.note-title')
     var contentField = noteCell.querySelector('.note-content')
 
-    var title = tilteField.innerText
+    var title = titleField.innerText
     var content = contentField.innerText
 
     var t = noteUpdateTemplate(title, content)
@@ -74,10 +74,10 @@ var insertNoteUpdateForm = function(noteCell) {
 }
 
 var updateNote = function(noteCell, note) {
-    var tilteField = noteCell.querySelector('.note-title')
+    var titleField = noteCell.querySelector('.note-title')
     var contentField = noteCell.querySelector('.note-content')
 
-    tilteField.innerText = note.title
+    titleField.innerText = note.title
     contentField.innerText = note.content
 }
 
