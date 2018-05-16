@@ -33,9 +33,9 @@ def process_request(connection):
             raw_data += r
             if len(r) < buffer_size:
                 break
-
-        raw_data = raw_data.decode()
         log('接收到 raw_data <{}>'.format(raw_data))
+
+        # chrome 浏览器可能会发空请求
         if len(raw_data) > 0:
             request = Request(raw_data)
             log('接收到 request {}'.format(request))

@@ -4,15 +4,14 @@ from urllib.parse import unquote_plus
 
 class Request(object):
     def __init__(self, raw_data):
-        self.raw_data = raw_data
         self.method = ''
         self.path = ''
         self.headers = {}
         self.cookies = {}
         self.args = {}
-        self.body = ''
+        self.body = b''
 
-        self.setup()
+        self.parse_raw_data(raw_data)
 
     def __repr__(self):
         classname = self.__class__
@@ -20,9 +19,12 @@ class Request(object):
         s = '\n'.join(properties)
         return '< {}\n{} >\n'.format(classname, s)
 
-    def setup(self):
-        header, body = self.raw_data.split('\r\n\r\n', 1)
-        self.parse_header(header)
+    def parse_raw_data(self, raw_data):
+        header, body = raw_data.split(b'\r\n\r\n', 1)
+        # header 都是文本故直接 decode
+        self.parse_header(header.decode())
+        # body 即可能是文本也可能是图片等二进制数据
+        # 故不在此处 decode，必要的时候再执行
         self.body = body
 
     def parse_header(self, header):
@@ -64,7 +66,7 @@ class Request(object):
             self.path = path
 
     def form(self):
-        body = unquote_plus(self.body)
+        body = self.body.decode()
 
         form = {}
         if '&' in body:
@@ -76,5 +78,5 @@ class Request(object):
         return form
 
     def json(self):
-        body = unquote_plus(self.body)
+        body = self.body.decode()
         return json.loads(body)
