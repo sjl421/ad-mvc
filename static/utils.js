@@ -10,7 +10,7 @@ var es = function(sel) {
 
 // 转义 HTML，预防 XSS
 var escapedHTML = function(html) {
-    var map = {
+    var d = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
@@ -18,7 +18,12 @@ var escapedHTML = function(html) {
         "'": '&#039;',
     }
 
-    return html.replace(/[&<>"']/g, function(m) { return map[m] })
+    var ks = Object.keys(d)
+    // js string 需要使用正则才能实现 replace all
+    var re = new RegExp(`[${ks.join('')}]`, 'g')
+    html = html.replace(re, function(k) { return d[k] })
+
+    return html
 }
 
 // ajax 函数
