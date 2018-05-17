@@ -50,20 +50,17 @@ class Request(object):
             self.cookies = cookies
 
     def parse_path(self, path):
-        path = unquote_plus(path)
-
         if '?' in path:
             path, params_string = path.split('?', 1)
-            self.path = path
 
             params = params_string.split('&')
             args = {}
             for p in params:
-                k, v = p.split('=')
+                k, v = (unquote_plus(s) for s in p.split('='))
                 args[k] = v
             self.args = args
-        else:
-            self.path = path
+
+        self.path = unquote_plus(path)
 
     def form(self):
         body = self.body.decode()
@@ -72,7 +69,7 @@ class Request(object):
         if '&' in body:
             params = body.split('&')
             for p in params:
-                k, v = p.split('=')
+                k, v = (unquote_plus(s) for s in p.split('='))
                 form[k] = v
 
         return form
