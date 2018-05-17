@@ -19,7 +19,7 @@ def static(request):
     filename = request.args['file']
     path = 'static/' + filename
     with open(path, 'rb') as f:
-        header = b'HTTP/1.x 200 OK\r\n\r\n'
+        header = b'HTTP/1.1 200 OK\r\n\r\n'
         src = header + f.read()
         return src
 
