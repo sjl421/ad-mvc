@@ -1,4 +1,5 @@
 import _thread
+import argparse
 import socket
 
 from utils import log
@@ -61,9 +62,18 @@ def run(host, port):
             _thread.start_new_thread(process_request, (connection,))
 
 
+def command_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', type=str, default='localhost')
+    parser.add_argument('--port', type=int, default='8000')
+    args = parser.parse_args()
+    return args
+
+
 if __name__ == '__main__':
+    arg = command_args()
     config = dict(
-        host='localhost',
-        port=3000,
+        host=arg.host,
+        port=arg.port,
     )
     run(**config)
