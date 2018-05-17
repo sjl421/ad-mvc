@@ -84,7 +84,15 @@ def json_response(data, headers=None):
     return r.encode()
 
 
-def error(request, code=404):
+def api_error_response(error):
+    """
+    ajax 无法直接 redirect，故约定在失败时添加一个 error 字段作为标记
+    """
+    d = dict(error=error)
+    return json_response(d)
+
+
+def error_response(request, code=404):
     """
     根据 code 返回不同的错误响应
     目前只有 404
@@ -111,17 +119,13 @@ def login_required(route_function):
 
 
 def api_login_required(route_function):
-    """
-    ajax 无法直接 redirect，故约定在失败时添加一个 error 字段作为标记
-    """
     @wraps(route_function)
     def wrapper(request):
         log('api_login_required')
         u = current_user(request)
         if u.is_guest():
             log('游客用户')
-            d = dict(error='请先登录')
-            return json_response(d)
+            return api_error_response('请先登录')
         else:
             log('登录用户', route_function)
             return route_function(request)

@@ -3,14 +3,14 @@ import socket
 
 from utils import log
 from request import Request
-from routes import error
+from routes import error_response
 from routes.routes_pulic import route_dict as public_routes
 from routes.routes_user import route_dict as user_routes
 from routes.routes_note import route_dict as note_routes
 from routes.api_note import route_dict as note_api
 
 
-def response_for_path(request):
+def response_for_request(request):
     """
     根据 path 调用相应的处理函数
     没有处理的 path 会返回 404
@@ -20,8 +20,10 @@ def response_for_path(request):
     r.update(user_routes())
     r.update(note_routes())
     r.update(note_api())
-    response = r.get(request.path, error)
-    return response(request)
+
+    route_function = r.get(request.path, error_response)
+    response = route_function(request)
+    return response
 
 
 def process_request(connection):
@@ -40,7 +42,7 @@ def process_request(connection):
             request = Request(raw_data)
             log('接收到 request {}'.format(request))
 
-            response = response_for_path(request)
+            response = response_for_request(request)
             con.sendall(response)
             log('发送出 response <{}>'.format(response))
 

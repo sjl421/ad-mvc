@@ -5,6 +5,7 @@ from . import (
     current_user,
     json_response,
     api_login_required,
+    api_error_response,
 )
 
 
@@ -32,8 +33,7 @@ def admin_required(route_function):
         if u.is_admin():
             return route_function(request)
         else:
-            d = dict(error='需要管理员权限')
-            return json_response(d)
+            return api_error_response('需要管理员权限')
 
     return wrapper
 
@@ -63,8 +63,7 @@ def ownership_required(route_function):
         if u.id == n.user_id:
             return route_function(request)
         else:
-            d = dict(error='只有所属用户才能操作')
-            return json_response(d)
+            return api_error_response('只有所属用户才能操作')
 
     return wrapper
 
