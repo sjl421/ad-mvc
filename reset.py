@@ -1,6 +1,7 @@
 import config
 from models.user import User
 from models.user_role import UserRole
+from utils import log
 
 
 def main():
@@ -21,7 +22,7 @@ def main():
         form['id'] = u.id
         result = User.update(form)
 
-    print(result)
+    log(result)
 
 
 if __name__ == '__main__':
