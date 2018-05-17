@@ -11,7 +11,11 @@ def initialized_environment():
     # 创建一个加载器, jinja2 会从这个目录中加载模板
     loader = FileSystemLoader(path)
     # 用加载器创建一个环境, 有了它才能读取模板文件
-    e = Environment(loader=loader)
+    # 启用自动转义，以防 xss
+    e = Environment(
+        autoescape=True,
+        loader=loader,
+    )
     return e
 
 
