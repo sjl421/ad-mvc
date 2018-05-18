@@ -8,6 +8,7 @@ from . import (
     redirect,
     login_required,
     csrf_required,
+    cookie_headers,
 )
 
 from template import Template
@@ -17,15 +18,12 @@ from models.user import User
 def register_view(request):
     result = request.args.get('result', '')
     u = current_user(request)
-    token = CsrfToken.new()
 
-    t = Template.render(
-        '/user/register.html',
-        username=u.username,
-        result=result,
-        csrf_token=token
-    )
-    return html_response(t)
+    token = CsrfToken.new()
+    headers = cookie_headers('csrf_token', token)
+
+    t = Template.render('/user/register.html', username=u.username, result=result)
+    return html_response(t, headers)
 
 
 @csrf_required
@@ -38,19 +36,22 @@ def register(request):
 def login_view(request):
     result = request.args.get('result', '')
     u = current_user(request)
+
+    token = CsrfToken.new()
+    headers = cookie_headers('csrf_token', token)
+
     t = Template.render('/user/login.html', username=u.username, result=result)
-    return html_response(t)
+    return html_response(t, headers)
 
 
+@csrf_required
 def login(request):
     form = request.form()
     u, result = User.login(form)
 
     if u is not None:
         session = Session.new(u)
-        headers = {
-            'Set-Cookie': 'session={}; HttpOnly; path=/'.format(session),
-        }
+        headers = cookie_headers('session', session)
         return redirect('/user/login/view?result={}'.format(result), headers)
     else:
         return redirect('/user/login/view?result={}'.format(result))
@@ -94,12 +95,16 @@ def admin(request):
     us = User.all()
     u = current_user(request)
 
+    token = CsrfToken.new()
+    headers = cookie_headers('csrf_token', token)
+
     t = Template.render('/user/admin.html', username=u.username, users=us, result=result)
-    return html_response(t)
+    return html_response(t, headers)
 
 
 @login_required
 @same_user_required
+@csrf_required
 def edit(request):
     user_id = int(request.args['id'])
     u = User.find_by(id=user_id)
@@ -107,12 +112,16 @@ def edit(request):
     cu = current_user(request)
     username = cu.username
 
+    token = CsrfToken.new()
+    headers = cookie_headers('csrf_token', token)
+
     t = Template.render('/user/edit.html', username=username, user=u)
-    return html_response(t)
+    return html_response(t, headers)
 
 
 @login_required
 @same_user_required
+@csrf_required
 def update(request):
     form = request.form()
     result = User.update(form)
@@ -121,6 +130,7 @@ def update(request):
 
 @login_required
 @admin_required
+@csrf_required
 def delete(request):
     user_id = int(request.args['id'])
     User.delete(user_id)

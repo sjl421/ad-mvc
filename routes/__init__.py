@@ -21,6 +21,13 @@ def formatted_header(headers, code=200, phrase='OK'):
     return header
 
 
+def cookie_headers(key, value):
+    headers = {
+        'Set-Cookie': '{}={}; HttpOnly; path=/'.format(key, value),
+    }
+    return headers
+
+
 def html_response(body, headers=None):
     h = {
         'Content-Type': 'text/html',
@@ -82,8 +89,8 @@ def error_response(request, code=404):
     根据 code 返回不同的错误响应
     """
     e = {
-        401: b'HTTP/1.1 401 UNAUTHORIZED\r\n\r\n<h1>UNAUTHORIZED</h1>',
-        404: b'HTTP/1.1 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
+        401: b'HTTP/1.1 401 UNAUTHORIZED\r\n\r\n<h1>UNAUTHORIZED</h1><a href="/">Home</a>',
+        404: b'HTTP/1.1 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1><a href="/" >Home</a>',
     }
     return e.get(code, b'')
 
@@ -129,8 +136,7 @@ def api_login_required(route_function):
 def csrf_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        args = request.args
-        token = args['csrf_token']
+        token = request.cookies['csrf_token']
 
         if CsrfToken.valid(token):
             CsrfToken.delete(token)
@@ -144,13 +150,13 @@ def csrf_required(route_function):
 def api_csrf_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        form = request.json()
-        token = form['csrf_token']
+        token = request.cookies['csrf_token']
 
         if CsrfToken.valid(token):
-            CsrfToken.delete(token)
+            # ajax 不刷新页面，不会产生新 token
+            # 故不删除当前 token
             return route_function(request)
         else:
-            return api_error_response('权限不足或已超时，请尝试刷新页面')
+            return api_error_response('Token 无效，请尝试刷新页面')
 
     return wrapper

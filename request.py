@@ -77,3 +77,8 @@ class Request(object):
     def json(self):
         body = self.body.decode()
         return json.loads(body)
+
+    def uncompleted(self):
+        b = ('Content-Length' in self.headers and
+             len(self.body) == 0)
+        return b

@@ -6,6 +6,7 @@ from . import (
     json_response,
     api_login_required,
     api_error_response,
+    api_csrf_required,
 )
 
 
@@ -16,6 +17,7 @@ def all(request):
 
 
 @api_login_required
+@api_csrf_required
 def add(request):
     form = request.json()
     u = current_user(request)
@@ -40,6 +42,7 @@ def admin_required(route_function):
 
 @api_login_required
 @admin_required
+@api_csrf_required
 def delete(request):
     form = request.json()
     note_id = int(form['id'])
@@ -57,6 +60,7 @@ def ownership_required(route_function):
     def wrapper(request):
         form = request.json()
         note_id = int(form['id'])
+
         n = Note.find_by(id=note_id)
         u = current_user(request)
 
@@ -70,6 +74,7 @@ def ownership_required(route_function):
 
 @api_login_required
 @ownership_required
+@api_csrf_required
 def update(request):
     form = request.json()
     n = Note.update(form)

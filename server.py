@@ -27,21 +27,33 @@ def response_for_request(request):
     return response
 
 
+def receive_all(connection):
+    buffer = b''
+    buffer_size = 1024
+    while True:
+        r = connection.recv(buffer_size)
+        buffer += r
+        if len(r) < buffer_size:
+            break
+    return buffer
+
+
 def process_request(connection):
     with connection as con:
-        raw_data = b''
-        buffer_size = 1024
-        while True:
-            r = con.recv(buffer_size)
-            raw_data += r
-            if len(r) < buffer_size:
-                break
+        raw_data = receive_all(connection)
         log('接收到 raw_data <{}>'.format(raw_data))
 
         # chrome 浏览器可能会发空请求
         if len(raw_data) > 0:
             request = Request(raw_data)
             log('接收到 request {}'.format(request))
+
+            # 浏览器可能会将 header 和 body 分开发送
+            # 此时，需继续接收 body
+            if request.uncompleted():
+                raw_data += receive_all(connection)
+                request = Request(raw_data)
+                log('完整接收到 request {}'.format(request))
 
             response = response_for_request(request)
             con.sendall(response)
