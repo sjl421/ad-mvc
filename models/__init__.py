@@ -1,6 +1,10 @@
 import json
 import os
+import uuid
 
+import redis
+
+import config
 from utils import log
 from .user_role import (
     JsonEncoder,
@@ -148,3 +152,60 @@ class Model(object):
         ms = cls.all()
         js = [t.json() for t in ms]
         return js
+
+
+def initialized_redis_connection():
+    r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+    return r
+
+
+class RedisBase(object):
+    connection = initialized_redis_connection()
+    prefix = config.redis_prefix
+
+    @classmethod
+    def name_for_key(cls, key):
+        name = '{}:{}:{}'.format(cls.prefix, cls.__name__, key)
+        return name
+
+    @classmethod
+    def set(cls, key, value, time=None):
+        """
+        time 过期时间（秒）
+        """
+        name = cls.name_for_key(key)
+        cls.connection.set(name, value, ex=time)
+
+    @classmethod
+    def get(cls, key, default_value=None):
+        name = cls.name_for_key(key)
+        v = cls.connection.get(name)
+        return v if v is not None else default_value
+
+    @classmethod
+    def exist(cls, key):
+        name = cls.name_for_key(key)
+        return cls.connection.exists(name)
+
+    @classmethod
+    def delete(cls, *keys):
+        names = (cls.name_for_key(key) for key in keys)
+        cls.connection.delete(*names)
+
+
+class RedisUserMixin(object):
+    @classmethod
+    def add_user(cls, user):
+        id = uuid.uuid4()
+        cls.set(id, user.id, 3600)
+        return id
+
+    @classmethod
+    def user(cls, id):
+        from .user import User
+        if cls.exist(id):
+            user_id = int(cls.get(id))
+            u = User.find_by(id=user_id)
+            return u if u is not None else User.guest()
+        else:
+            return User.guest()

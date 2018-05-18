@@ -2,22 +2,13 @@ import json
 from functools import wraps
 
 from models.session import Session
-from models.user import User
 from utils import log
 
 
 def current_user(request):
-    if 'session_id' in request.cookies:
-        session_id = request.cookies['session_id']
-        s = Session.find_by(session_id=session_id)
-        if s is None or s.expired():
-            return User.guest()
-        else:
-            user_id = s.user_id
-            u = User.find_by(id=user_id)
-            return u if u is not None else User.guest()
-    else:
-        return User.guest()
+    session_id = request.cookies.get('session_id')
+    u = Session.user(session_id)
+    return u
 
 
 def formatted_header(headers, code=200, phrase='OK'):

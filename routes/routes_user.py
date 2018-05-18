@@ -38,12 +38,7 @@ def login(request):
     u, result = User.login(form)
 
     if u is not None:
-        session_id = str(uuid.uuid4())
-        form = dict(
-            session_id=session_id,
-            user_id=u.id,
-        )
-        Session.new(form)
+        session_id = Session.add_user(u)
 
         headers = {
             'Set-Cookie': 'session_id={}; path=/'.format(session_id),
