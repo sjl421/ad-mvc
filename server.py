@@ -2,13 +2,13 @@ import _thread
 import argparse
 import socket
 
-from utils import log
 from request import Request
 from routes import error_response
+from routes.api.note import route_dict as note_api
+from routes.note import route_dict as note_routes
 from routes.pulic import route_dict as public_routes
 from routes.user import route_dict as user_routes
-from routes.note import route_dict as note_routes
-from routes.api.note import route_dict as note_api
+from utils import log
 
 
 def response_for_request(request):

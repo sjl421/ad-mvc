@@ -1,11 +1,10 @@
+from template import Template
 from utils import log
 from . import (
     html_response,
     current_user,
     error_response,
 )
-
-from template import Template
 
 
 def index(request):

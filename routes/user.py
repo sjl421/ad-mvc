@@ -1,7 +1,9 @@
 from functools import wraps
 
-from models.session import Session
 from models.csrf_token import CsrfToken
+from models.session import Session
+from models.user import User
+from template import Template
 from . import (
     current_user,
     html_response,
@@ -9,9 +11,6 @@ from . import (
     login_required,
     csrf_required,
 )
-
-from template import Template
-from models.user import User
 
 
 def register_view(request):

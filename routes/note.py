@@ -1,10 +1,10 @@
 from models.csrf_token import CsrfToken
+from template import Template
 from . import (
     current_user,
     html_response,
     login_required,
 )
-from template import Template
 
 
 @login_required

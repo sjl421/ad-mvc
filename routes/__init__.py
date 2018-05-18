@@ -1,7 +1,7 @@
 from functools import wraps
 
-from models.session import Session
 from models.csrf_token import CsrfToken
+from models.session import Session
 from models.user import User
 from utils import log
 
