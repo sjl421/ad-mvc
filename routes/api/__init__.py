@@ -41,13 +41,10 @@ def api_error_response(error):
 def api_login_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        log('api_login_required')
         u = current_user(request)
         if u.is_guest():
-            log('游客用户')
             return api_error_response('请先登录')
         else:
-            log('登录用户', route_function)
             return route_function(request)
 
     return wrapper
@@ -56,7 +53,7 @@ def api_login_required(route_function):
 def api_csrf_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        token = request.args['csrf_token']
+        token = request.query['csrf_token']
 
         if CsrfToken.valid(token):
             # ajax 不刷新页面，不会产生新 token

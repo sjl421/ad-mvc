@@ -17,7 +17,7 @@ def static(request):
     """
     静态资源的处理函数, 读取文件并生成响应返回
     """
-    filename = request.args['file']
+    filename = request.query['file']
 
     # 出于安全考虑，避免访问到 static 目录之外
     if '..' in filename:

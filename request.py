@@ -8,7 +8,7 @@ class Request(object):
         self.path = ''
         self.headers = {}
         self.cookies = {}
-        self.args = {}
+        self.query = {}
         self.body = b''
 
         self.parse_raw_data(raw_data)
@@ -58,21 +58,21 @@ class Request(object):
             for p in params:
                 k, v = (unquote_plus(s) for s in p.split('='))
                 args[k] = v
-            self.args = args
+            self.query = args
 
         self.path = unquote_plus(path)
 
     def form(self):
         body = self.body.decode()
 
-        form = {}
+        args = {}
         if '&' in body:
             params = body.split('&')
             for p in params:
                 k, v = (unquote_plus(s) for s in p.split('='))
-                form[k] = v
+                args[k] = v
 
-        return form
+        return args
 
     def json(self):
         body = self.body.decode()

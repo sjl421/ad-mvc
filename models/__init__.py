@@ -13,27 +13,22 @@ from .user_role import (
 
 def save(data, path):
     """
-    本函数把一个 dict 或者 list 写入文件
-    data 是 dict 或者 list
-    path 是保存文件的路径
+    把一个 dict 或者 list 写入文件
     """
     s = json.dumps(data, indent=2, ensure_ascii=False, cls=JsonEncoder)
     # 确保目录存在
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w+', encoding='utf-8') as f:
-        log('save', path, s, data)
         f.write(s)
 
 
 def load(path):
     """
-    本函数从一个文件中载入数据并转化为 dict 或者 list
-    path 是保存文件的路径
+    从文件中载入数据并转化为 dict 或者 list
     """
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             s = f.read()
-            log('load', s)
             return json.loads(s, object_hook=json_decode)
     else:
         log('db not found <{}>'.format(path))
@@ -44,7 +39,6 @@ class Model(object):
     """
     Model 是所有 model 的基类
     """
-
     def __init__(self, form):
         self.id = form.get('id', None)
 
@@ -80,15 +74,11 @@ class Model(object):
     def all(cls):
         path = cls.db_path()
         models = load(path)
-        log('models in all', models)
-
         ms = [cls(m) for m in models]
         return ms
 
     @classmethod
     def find_by(cls, **kwargs):
-        log('find_by kwargs', kwargs)
-
         for m in cls.all():
             exist = True
             for k, v in kwargs.items():
@@ -99,9 +89,7 @@ class Model(object):
 
     @classmethod
     def find_all(cls, **kwargs):
-        log('find_all kwargs', kwargs)
         models = []
-
         for m in cls.all():
             exist = True
             for k, v in kwargs.items():
@@ -118,8 +106,6 @@ class Model(object):
         把 self 添加进去并且保存进文件
         """
         models = self.all()
-        log('models', models)
-
         if self.id is None:
             # 加上 id
             if len(models) > 0:
@@ -159,6 +145,9 @@ def initialized_redis_connection():
 
 
 class RedisBase(object):
+    """
+    用于操作 redis 的基类，用法类似于字典
+    """
     connection = initialized_redis_connection()
     prefix = config.redis_prefix
 

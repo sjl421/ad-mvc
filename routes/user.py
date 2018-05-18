@@ -14,7 +14,7 @@ from . import (
 
 
 def register_view(request):
-    result = request.args.get('result', '')
+    result = request.query.get('result', '')
     u = current_user(request)
     token = CsrfToken.new()
 
@@ -35,7 +35,7 @@ def register(request):
 
 
 def login_view(request):
-    result = request.args.get('result', '')
+    result = request.query.get('result', '')
     u = current_user(request)
     token = CsrfToken.new()
 
@@ -66,7 +66,7 @@ def login(request):
 def same_user_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        args = request.args
+        args = request.query
         if 'id' in args:
             user_id = int(args['id'])
         else:
@@ -96,7 +96,7 @@ def admin_required(route_function):
 
 @login_required
 def admin(request):
-    result = request.args.get('result', '')
+    result = request.query.get('result', '')
     u = current_user(request)
     token = CsrfToken.new()
     us = User.all()
@@ -115,7 +115,7 @@ def admin(request):
 @same_user_required
 @csrf_required
 def edit(request):
-    user_id = int(request.args['id'])
+    user_id = int(request.query['id'])
     u = User.find_by(id=user_id)
 
     cu = current_user(request)
@@ -143,7 +143,7 @@ def update(request):
 @admin_required
 @csrf_required
 def delete(request):
-    user_id = int(request.args['id'])
+    user_id = int(request.query['id'])
     User.delete(user_id)
     return redirect('/user/admin?result={}'.format('删除成功'))
 

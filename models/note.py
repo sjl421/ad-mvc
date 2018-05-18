@@ -6,7 +6,6 @@ class Note(Model):
     """
     用户留言
     """
-
     def __init__(self, form):
         super().__init__(form)
         self.title = form['title']

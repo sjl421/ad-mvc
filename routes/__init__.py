@@ -3,7 +3,6 @@ from functools import wraps
 from models.csrf_token import CsrfToken
 from models.session import Session
 from models.user import User
-from utils import log
 
 
 def current_user(request):
@@ -70,13 +69,10 @@ def error_response(request, code=404):
 def login_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        log('login_required')
         u = current_user(request)
         if u.is_guest():
-            log('游客用户')
             return redirect('/user/login/view')
         else:
-            log('登录用户', route_function)
             return route_function(request)
 
     return wrapper
@@ -85,7 +81,7 @@ def login_required(route_function):
 def csrf_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        token = request.args['csrf_token']
+        token = request.query['csrf_token']
 
         if CsrfToken.valid(token):
             CsrfToken.delete(token)
