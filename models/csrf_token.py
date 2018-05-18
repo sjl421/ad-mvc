@@ -1,8 +1,6 @@
 import uuid
 
-from . import (
-    RedisBase,
-)
+from . import RedisBase
 
 
 class CsrfToken(RedisBase):
