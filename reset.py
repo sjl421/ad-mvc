@@ -5,17 +5,13 @@ from utils import log
 
 
 def main():
-    username = config.admin_username
-    password = config.admin_password
-    role = UserRole.admin
-
     form = dict(
-        username=username,
-        password=password,
-        role=role,
+        username=config.admin_username,
+        password=config.admin_password,
+        role=UserRole.admin,
     )
 
-    u = User.find_by(username=username)
+    u = User.find_by(username=config.admin_username)
     if u is None:
         result = User.register(form)
     else:
