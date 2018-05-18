@@ -82,8 +82,9 @@ def error_response(request, code=404):
     根据 code 返回不同的错误响应
     """
     e = {
-        401: b'HTTP/1.1 401 UNAUTHORIZED\r\n\r\n<h1>UNAUTHORIZED</h1><a href="/">Home</a>',
-        404: b'HTTP/1.1 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1><a href="/" >Home</a>',
+        401: b'HTTP/1.1 401 Unauthorized\r\n\r\n<h1>Unauthorized</h1><a href="/">Home</a>',
+        403: b'HTTP/1.1 403 Forbidden\r\n\r\n<h1>Forbidden</h1><a href="/">Home</a>',
+        404: b'HTTP/1.1 404 Not Found\r\n\r\n<h1>Not Found</h1><a href="/" >Home</a>',
     }
     return e.get(code, b'')
 
