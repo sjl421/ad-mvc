@@ -191,21 +191,3 @@ class RedisBase(object):
     def delete(cls, *keys):
         names = (cls.name_for_key(key) for key in keys)
         cls.connection.delete(*names)
-
-
-class RedisUserMixin(object):
-    @classmethod
-    def add_user(cls, user):
-        id = uuid.uuid4()
-        cls.set(id, user.id, 3600)
-        return id
-
-    @classmethod
-    def user(cls, id):
-        from .user import User
-        if cls.exist(id):
-            user_id = int(cls.get(id))
-            u = User.find_by(id=user_id)
-            return u if u is not None else User.guest()
-        else:
-            return User.guest()

@@ -1,12 +1,13 @@
-import uuid
 from functools import wraps
 
 from models.session import Session
+from models.csrf_token import CsrfToken
 from . import (
     current_user,
     html_response,
     redirect,
     login_required,
+    csrf_required,
 )
 
 from template import Template
@@ -16,10 +17,18 @@ from models.user import User
 def register_view(request):
     result = request.args.get('result', '')
     u = current_user(request)
-    t = Template.render('/user/register.html', username=u.username, result=result)
+    token = CsrfToken.new()
+
+    t = Template.render(
+        '/user/register.html',
+        username=u.username,
+        result=result,
+        csrf_token=token
+    )
     return html_response(t)
 
 
+@csrf_required
 def register(request):
     form = request.form()
     result = User.register(form)
@@ -38,12 +47,10 @@ def login(request):
     u, result = User.login(form)
 
     if u is not None:
-        session_id = Session.add_user(u)
-
+        session = Session.new(u)
         headers = {
-            'Set-Cookie': 'session_id={}; path=/'.format(session_id),
+            'Set-Cookie': 'session={}; HttpOnly; path=/'.format(session),
         }
-
         return redirect('/user/login/view?result={}'.format(result), headers)
     else:
         return redirect('/user/login/view?result={}'.format(result))

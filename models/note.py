@@ -1,3 +1,4 @@
+from utils import log
 from . import Model
 
 
@@ -26,12 +27,16 @@ class Note(Model):
     def user(self):
         from .user import User
         u = User.find_by(id=self.user_id)
-        return u if u is not None else User.guest()
+        return u
 
     def json(self):
         form = super().json()
 
         u = self.user()
-        form['username'] = u.username
+        if u is not None:
+            form['username'] = u.username
+        else:
+            log('{} 的 user 已经被删除'.format(self))
+            form['username'] = '(DELETED_USER)'
 
         return form

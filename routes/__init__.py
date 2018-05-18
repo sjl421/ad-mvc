@@ -2,13 +2,15 @@ import json
 from functools import wraps
 
 from models.session import Session
+from models.csrf_token import CsrfToken
+from models.user import User
 from utils import log
 
 
 def current_user(request):
-    session_id = request.cookies.get('session_id')
-    u = Session.user(session_id)
-    return u
+    session = request.cookies.get('session')
+    u = Session.find_user(session)
+    return u if u is not None else User.guest()
 
 
 def formatted_header(headers, code=200, phrase='OK'):
@@ -75,23 +77,23 @@ def json_response(data, headers=None):
     return r.encode()
 
 
+def error_response(request, code=404):
+    """
+    根据 code 返回不同的错误响应
+    """
+    e = {
+        401: b'HTTP/1.1 401 UNAUTHORIZED\r\n\r\n<h1>UNAUTHORIZED</h1>',
+        404: b'HTTP/1.1 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
+    }
+    return e.get(code, b'')
+
+
 def api_error_response(error):
     """
     ajax 无法直接 redirect，故约定在失败时添加一个 error 字段作为标记
     """
     d = dict(error=error)
     return json_response(d)
-
-
-def error_response(request, code=404):
-    """
-    根据 code 返回不同的错误响应
-    目前只有 404
-    """
-    e = {
-        404: b'HTTP/1.1 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
-    }
-    return e.get(code, b'')
 
 
 def login_required(route_function):
@@ -120,5 +122,35 @@ def api_login_required(route_function):
         else:
             log('登录用户', route_function)
             return route_function(request)
+
+    return wrapper
+
+
+def csrf_required(route_function):
+    @wraps(route_function)
+    def wrapper(request):
+        args = request.args
+        token = args['csrf_token']
+
+        if CsrfToken.valid(token):
+            CsrfToken.delete(token)
+            return route_function(request)
+        else:
+            return error_response(request, 401)
+
+    return wrapper
+
+
+def api_csrf_required(route_function):
+    @wraps(route_function)
+    def wrapper(request):
+        form = request.json()
+        token = form['csrf_token']
+
+        if CsrfToken.valid(token):
+            CsrfToken.delete(token)
+            return route_function(request)
+        else:
+            return api_error_response('权限不足或已超时，请尝试刷新页面')
 
     return wrapper
