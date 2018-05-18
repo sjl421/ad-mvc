@@ -1,22 +1,22 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>留言板页面</title>
-</head>
-<body>
-    <h1>留言板（使用 AJAX 实现）</h1>
-    <h2>你好 {{ username }}</h2>
-    <div id="id-note-add-form" class="note-add-form">
-        <input type="text" class="note-title-input" placeholder="标题">
-        <input type="text" class="note-content-input" placeholder="内容">
-        <button class="note-add">发表留言</button>
-    </div>
-    <a href="/">回到主页</a>
-    <h2>留言列表</h2>
-    <div id="id-note-list" class="note-list">
-    </div>
-</body>
+{% extends "base.html" %}
+
+{% block title %}留言板（使用 AJAX 实现）{% endblock %}
+
+{% block input %}
+<div id="id-note-add-form" class="note-add-form">
+    <input type="text" class="note-title-input" placeholder="标题">
+    <input type="text" class="note-content-input" placeholder="内容">
+    <button class="note-add">发表留言</button>
+</div>
+{% endblock %}
+
+{% block main %}
+<h2>留言列表</h2>
+<div id="id-note-list" class="note-list">
+</div>
+{% endblock %}
+
+{% block script %}
 <script src="/static?file=utils.js"></script>
 <script src="/static?file=note.js"></script>
-</html>
+{% endblock %}

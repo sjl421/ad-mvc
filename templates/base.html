@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <h1>AD MVC {{ self.title() }}</h1>
+    <h2>你好 {{ username }}</h2>
+    <div id="id-top">
+        <a href="/">主页</a>
+        <a href="/user/register/view" >用户注册</a>
+        <a href="/user/login/view" >用户登录</a>
+        <a href="/user/admin" >用户管理</a>
+        <a href="/note/index" >留言板</a>
+    </div>
+    <br>
+    <div id="id-input">
+        {% block input %}{% endblock %}
+    </div>
+    <div id="id-main">
+        {% block main %}{% endblock %}
+    </div>
+</body>
+{% block script %}{% endblock %}
+</html>
