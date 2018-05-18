@@ -6,20 +6,28 @@ var apiNoteAll = function(callback) {
 
 var apiNoteAdd = function(data, callback) {
     var method = 'POST'
-    var path = '/api/note/add'
+    var token = csrfToken()
+    var path = `/api/note/add?csrf_token=${token}`
     ajax(method, path, data, callback)
 }
 
 var apiNoteDelete = function(data, callback) {
     var method = 'POST'
-    var path = '/api/note/delete'
+    var token = csrfToken()
+    var path = `/api/note/delete?csrf_token=${token}`
     ajax(method, path, data, callback)
 }
 
 var apiNoteUpdate = function(data, callback) {
     var method = 'POST'
-    var path = '/api/note/update'
+    var token = csrfToken()
+    var path = `/api/note/update?csrf_token=${token}`
     ajax(method, path, data, callback)
+}
+
+var csrfToken = function() {
+    var token = e('#id-csrf-token').innerText
+    return token
 }
 
 var noteTemplate = function(note) {

@@ -3,7 +3,6 @@ from . import (
     current_user,
     html_response,
     login_required,
-    cookie_headers,
 )
 from template import Template
 
@@ -11,12 +10,13 @@ from template import Template
 @login_required
 def index(request):
     u = current_user(request)
-
     token = CsrfToken.new()
-    headers = cookie_headers('csrf_token', token)
-
-    t = Template.render('/note/index.html', username=u.username)
-    return html_response(t, headers)
+    t = Template.render(
+        '/note/index.html',
+        username=u.username,
+        csrf_token=token,
+    )
+    return html_response(t)
 
 
 def route_dict():

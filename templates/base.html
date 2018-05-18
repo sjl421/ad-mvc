@@ -21,6 +21,7 @@
     <div id="id-main">
         {% block main %}{% endblock %}
     </div>
+    <div id="id-csrf-token" hidden>{{ csrf_token }}</div>
 </body>
 {% block script %}{% endblock %}
 </html>

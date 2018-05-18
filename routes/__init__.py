@@ -143,7 +143,7 @@ def csrf_required(route_function):
 def api_csrf_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        token = request.cookies['csrf_token']
+        token = request.args['csrf_token']
 
         if CsrfToken.valid(token):
             # ajax 不刷新页面，不会产生新 token
