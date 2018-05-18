@@ -21,13 +21,6 @@ def formatted_header(headers, code=200, phrase='OK'):
     return header
 
 
-def cookie_headers(key, value):
-    headers = {
-        'Set-Cookie': '{}={}; HttpOnly; path=/'.format(key, value),
-    }
-    return headers
-
-
 def html_response(body, headers=None):
     h = {
         'Content-Type': 'text/html',
@@ -136,7 +129,7 @@ def api_login_required(route_function):
 def csrf_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        token = request.cookies['csrf_token']
+        token = request.args['csrf_token']
 
         if CsrfToken.valid(token):
             CsrfToken.delete(token)

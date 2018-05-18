@@ -8,8 +8,8 @@
 {% for u in users %}
 <h3>
     {{ u.username }}
-    <a href="/user/edit?id={{ u.id }}">编辑</a>
-    <a href="/user/delete?id={{ u.id }}">删除</a>
+    <a href="/user/edit?id={{ u.id }}&csrf_token={{ csrf_token }}">编辑</a>
+    <a href="/user/delete?id={{ u.id }}&csrf_token={{ csrf_token }}">删除</a>
 </h3>
 {% endfor %}
 

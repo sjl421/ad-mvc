@@ -3,7 +3,7 @@
 {% block title %}用户注册{% endblock %}
 
 {% block input %}
-<form action="/user/register" method="POST">
+<form action="/user/register?csrf_token={{ csrf_token }}" method="POST">
     <input type="text" name="username" placeholder="请输入用户名">
     <br>
     <input type="text" name="password" placeholder="请输入密码">

@@ -3,7 +3,7 @@
 {% block title %}用户编辑{% endblock %}
 
 {% block input %}
-<form action="/user/update" method="POST">
+<form action="/user/update?csrf_token={{ csrf_token }}" method="POST">
     <input type="text" name="id" value="{{ user.id }}" hidden>
     <br>
     <input type="text" name="username" value="{{ user.username }}">
