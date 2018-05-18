@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" href="/static?file=icon.png">
 </head>
 <body>
-    <h1>AD MVC {{ self.title() }}</h1>
+    <h1>AD MVC - {{ self.title() }}</h1>
     <h2>你好 {{ username }}</h2>
     <div id="id-top">
         <a href="/">主页</a>
