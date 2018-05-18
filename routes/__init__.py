@@ -89,7 +89,7 @@ def error_response(request, code=404):
     目前只有 404
     """
     e = {
-        404: b'HTTP/1.x 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
+        404: b'HTTP/1.1 404 NOT FOUND\r\n\r\n<h1>NOT FOUND</h1>',
     }
     return e.get(code, b'')
 

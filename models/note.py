@@ -26,7 +26,7 @@ class Note(Model):
     def user(self):
         from .user import User
         u = User.find_by(id=self.user_id)
-        return u
+        return u if u is not None else User.guest()
 
     def json(self):
         form = super().json()
