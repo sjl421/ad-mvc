@@ -66,9 +66,9 @@ def login(request):
 def same_user_required(route_function):
     @wraps(route_function)
     def wrapper(request):
-        args = request.query
-        if 'id' in args:
-            user_id = int(args['id'])
+        query = request.query
+        if 'id' in query:
+            user_id = int(query['id'])
         else:
             form = request.form()
             user_id = int(form['id'])
