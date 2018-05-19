@@ -83,9 +83,9 @@ def command_args():
 
 
 if __name__ == '__main__':
-    arg = command_args()
+    args = command_args()
     config = dict(
-        host=arg.host,
-        port=arg.port,
+        host=args.host,
+        port=args.port,
     )
     run(**config)
