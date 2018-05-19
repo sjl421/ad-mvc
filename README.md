@@ -3,13 +3,14 @@
 基于 Socket 和 HTTP 的 Web MVC 框架。
 
 ## 结构
-| 文件/目录  |   说明    |    分层    |
-| ---------- | --------- | ---------- |
-| server.py  | 程序入口  | -          |
-| models/    | 数据模型  | Model      |
-| routes/    | 转发路由  | Controller |
-| templates/ | HTML 模板 | View       |
-| static/    | 静态资源  | -          |
+
+| 文件/目录  |   说明   |    分层    |
+| ---------- | -------- | ---------- |
+| server.py  | 程序入口 | -          |
+| models/    | 数据模型 | Model      |
+| routes/    | 转发路由 | Controller |
+| templates/ | 前端模板 | View       |
+| static/    | 静态资源 | -          |
 
 ## 部署
 
@@ -30,10 +31,10 @@ cd /var/www/ad-mvc
 touch confg.py
 ```
 
-编辑`config.py`文件，增加如下属性：
+编辑`config.py`文件，增加如下属性并自定义值：
 
 ```python
-redis_prefix = 'mvc'
+redis_prefix = 'xxxxx'
 ```
 
 `redis_prefix`可用于区分不同项目。
@@ -47,9 +48,9 @@ bash -ex setup.sh
 
 ### 修改`server`的监听`ip`和`port`（可选）
 
-编辑`ad-mvc/supervisor.conf`，修改`command`属性：
+编辑`supervisor.conf`文件，修改`command`属性中的`host`和`port`参数值：
 
-```
+```conf
 command=/usr/bin/python3 server.py --host localhost --port 8000
 ```
 
@@ -57,7 +58,7 @@ command=/usr/bin/python3 server.py --host localhost --port 8000
 
 ### 设置管理员账户（可选）
 
-编辑`ad-mvc/config.py`，增加如下属性：
+编辑`config.py`文件，增加如下属性并自定义值：
 
 ```python
 admin_username = 'xxxxx'
@@ -71,6 +72,6 @@ cd /var/www/ad-mvc
 python3 reset.py
 ```
 
-## 样例
+## 链接
 
 [https://mvc.accelad.xyz](https://mvc.accelad.xyz)
